@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마음이음 - 연애 심리상담 서비스</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #3a3a3a;
+            line-height: 1.6;
+        }
+
+        /* 네비게이션 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+            padding: 0 40px;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e87461;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #e87461;
+        }
+
+        /* 히어로 섹션 */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #fdf2f0 0%, #f0e4f7 50%, #e4ecf7 100%);
+            padding: 120px 20px 80px;
+        }
+
+        .hero-content {
+            max-width: 700px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            color: #2d2d2d;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .hero h1 span {
+            color: #e87461;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #e87461;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #d4614f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(232, 116, 97, 0.35);
+        }
+
+        .btn-outline {
+            border: 2px solid #e87461;
+            color: #e87461;
+            margin-left: 12px;
+        }
+
+        .btn-outline:hover {
+            background: #e87461;
+            color: #fff;
+        }
+
+        /* 섹션 공통 */
+        section {
+            padding: 100px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            color: #2d2d2d;
+            margin-bottom: 12px;
+        }
+
+        .section-title p {
+            color: #888;
+            font-size: 1.05rem;
+        }
+
+        /* 서비스 소개 */
+        .services {
+            background: #fff;
+        }
+
+        .services-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: #fafafa;
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+            color: #2d2d2d;
+        }
+
+        .service-card p {
+            color: #777;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* 상담사 소개 */
+        .counselors {
+            background: linear-gradient(135deg, #fdf2f0 0%, #f7f0fc 100%);
+        }
+
+        .counselor-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .counselor-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .counselor-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e87461, #c96dd8);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: #fff;
+        }
+
+        .counselor-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 6px;
+            color: #2d2d2d;
+        }
+
+        .counselor-card .role {
+            color: #e87461;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .counselor-card p {
+            color: #777;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* 자가진단 테스트 */
+        .quiz {
+            background: #fff;
+        }
+
+        .quiz-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #fdf2f0, #f7f0fc);
+            border-radius: 20px;
+            padding: 50px 40px;
+        }
+
+        .quiz-question {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #2d2d2d;
+            text-align: center;
+        }
+
+        .quiz-progress {
+            text-align: center;
+            color: #aaa;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            padding: 16px 20px;
+            background: #fff;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .quiz-option:hover {
+            border-color: #e87461;
+            background: #fff5f3;
+        }
+
+        .quiz-option.selected {
+            border-color: #e87461;
+            background: #fff5f3;
+            font-weight: 600;
+        }
+
+        .quiz-nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            display: none;
+        }
+
+        .quiz-result h3 {
+            font-size: 1.5rem;
+            color: #e87461;
+            margin-bottom: 15px;
+        }
+
+        .quiz-result p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* 상담 예약 폼 */
+        .booking {
+            background: linear-gradient(135deg, #fdf2f0 0%, #e4ecf7 100%);
+        }
+
+        .booking-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #e87461;
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .form-submit {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .form-submit .btn {
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* 후기 */
+        .reviews {
+            background: #fff;
+        }
+
+        .review-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .review-card {
+            background: #fafafa;
+            border-radius: 16px;
+            padding: 30px;
+            border-left: 4px solid #e87461;
+        }
+
+        .review-stars {
+            color: #f5b731;
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        .review-card p {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .review-author {
+            color: #aaa;
+            font-size: 0.85rem;
+        }
+
+        /* 푸터 */
+        footer {
+            background: #2d2d2d;
+            color: #bbb;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        footer .logo {
+            color: #e87461;
+            margin-bottom: 12px;
+        }
+
+        footer p {
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+
+        /* 모바일 반응형 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .btn-outline {
+                display: block;
+                margin: 12px auto 0;
+            }
+
+            .quiz-container,
+            .booking-form {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 네비게이션 -->
+<nav>
+    <div class="nav-inner">
+        <div class="logo">마음이음</div>
+        <ul class="nav-links">
+            <li><a href="#services">서비스 소개</a></li>
+            <li><a href="#counselors">상담사</a></li>
+            <li><a href="#quiz">자가진단</a></li>
+            <li><a href="#booking">상담 예약</a></li>
+            <li><a href="#reviews">후기</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- 히어로 -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>사랑도 연습이 필요할 때,<br><span>마음이음</span>이 함께합니다</h1>
+        <p>연애에서 느끼는 불안, 갈등, 외로움...<br>
+           전문 심리상담사가 당신의 마음을 따뜻하게 이어드립니다.</p>
+        <a href="#booking" class="btn btn-primary">상담 예약하기</a>
+        <a href="#quiz" class="btn btn-outline">자가진단 해보기</a>
+    </div>
+</section>
+
+<!-- 서비스 소개 -->
+<section id="services" class="services">
+    <div class="section-title">
+        <h2>어떤 상담을 받을 수 있나요?</h2>
+        <p>다양한 연애 고민에 맞춘 전문 상담 프로그램</p>
+    </div>
+    <div class="services-grid">
+        <div class="service-card">
+            <div class="service-icon">&#x1F491;</div>
+            <h3>커플 상담</h3>
+            <p>소통 문제, 갈등 해결, 신뢰 회복 등 파트너와 함께하는 관계 개선 상담을 진행합니다.</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">&#x1F494;</div>
+            <h3>이별 극복 상담</h3>
+            <p>이별 후 감정 정리와 자존감 회복을 돕고, 건강하게 새 출발할 수 있도록 안내합니다.</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">&#x1F496;</div>
+            <h3>연애 시작 상담</h3>
+            <p>연애가 처음이거나 어려운 분들을 위한 애착 유형 분석과 관계 기술 코칭을 제공합니다.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 상담사 소개 -->
+<section id="counselors" class="counselors">
+    <div class="section-title">
+        <h2>전문 상담사를 소개합니다</h2>
+        <p>검증된 자격과 풍부한 경험을 갖춘 전문가</p>
+    </div>
+    <div class="counselor-grid">
+        <div class="counselor-card">
+            <div class="counselor-avatar">&#x1F469;&#x200D;&#x2695;&#xFE0F;</div>
+            <h3>김서윤 상담사</h3>
+            <div class="role">커플 상담 전문</div>
+            <p>임상심리 석사 / 상담 경력 12년<br>부부 및 커플 관계 회복 전문</p>
+        </div>
+        <div class="counselor-card">
+            <div class="counselor-avatar">&#x1F468;&#x200D;&#x2695;&#xFE0F;</div>
+            <h3>박지호 상담사</h3>
+            <div class="role">애착 심리 전문</div>
+            <p>심리학 박사 / 상담 경력 9년<br>애착 유형과 연애 패턴 분석 전문</p>
+        </div>
+        <div class="counselor-card">
+            <div class="counselor-avatar">&#x1F469;&#x200D;&#x2695;&#xFE0F;</div>
+            <h3>이하은 상담사</h3>
+            <div class="role">이별 회복 전문</div>
+            <p>상담심리 석사 / 상담 경력 7년<br>감정 회복 및 자존감 향상 전문</p>
+        </div>
+    </div>
+</section>
+
+<!-- 자가진단 테스트 -->
+<section id="quiz" class="quiz">
+    <div class="section-title">
+        <h2>나의 연애 유형은?</h2>
+        <p>간단한 테스트로 나의 연애 심리를 확인해보세요</p>
+    </div>
+    <div class="quiz-container">
+        <div id="quizArea">
+            <div class="quiz-progress" id="quizProgress">1 / 5</div>
+            <div class="quiz-question" id="quizQuestion"></div>
+            <div class="quiz-options" id="quizOptions"></div>
+            <div class="quiz-nav">
+                <button class="btn btn-primary" id="quizNext" onclick="nextQuestion()">다음</button>
+            </div>
+        </div>
+        <div class="quiz-result" id="quizResult">
+            <h3 id="resultTitle"></h3>
+            <p id="resultDesc"></p>
+            <br>
+            <a href="#booking" class="btn btn-primary">전문 상담 받아보기</a>
+        </div>
+    </div>
+</section>
+
+<!-- 상담 예약 -->
+<section id="booking" class="booking">
+    <div class="section-title">
+        <h2>상담 예약</h2>
+        <p>편한 시간에 전문 상담사와 이야기를 나눠보세요</p>
+    </div>
+    <form class="booking-form" onsubmit="submitBooking(event)">
+        <div class="form-group">
+            <label>이름</label>
+            <input type="text" placeholder="이름을 입력해주세요" required>
+        </div>
+        <div class="form-group">
+            <label>연락처</label>
+            <input type="tel" placeholder="010-0000-0000" required>
+        </div>
+        <div class="form-group">
+            <label>상담 유형</label>
+            <select required>
+                <option value="">선택해주세요</option>
+                <option>커플 상담</option>
+                <option>이별 극복 상담</option>
+                <option>연애 시작 상담</option>
+                <option>기타 고민 상담</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>희망 상담사</label>
+            <select>
+                <option value="">선택 없음 (자동 배정)</option>
+                <option>김서윤 상담사</option>
+                <option>박지호 상담사</option>
+                <option>이하은 상담사</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>희망 날짜</label>
+            <input type="date" required>
+        </div>
+        <div class="form-group">
+            <label>고민 내용 (선택)</label>
+            <textarea placeholder="상담 전 미리 전해주고 싶은 내용이 있다면 작성해주세요."></textarea>
+        </div>
+        <div class="form-submit">
+            <button type="submit" class="btn btn-primary">예약 신청하기</button>
+        </div>
+    </form>
+</section>
+
+<!-- 후기 -->
+<section id="reviews" class="reviews">
+    <div class="section-title">
+        <h2>상담 후기</h2>
+        <p>마음이음과 함께한 분들의 이야기</p>
+    </div>
+    <div class="review-grid">
+        <div class="review-card">
+            <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>"3년 연애 중 심한 갈등을 겪고 있었는데, 커플 상담을 통해 서로의 마음을 이해하게 됐어요. 지금은 훨씬 편안해졌습니다."</p>
+            <div class="review-author">- 28세 / 여성 / 커플 상담</div>
+        </div>
+        <div class="review-card">
+            <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>"이별 후 6개월 동안 힘들었는데, 상담을 받으며 제 감정을 정리할 수 있었어요. 이제는 저를 더 사랑하게 됐습니다."</p>
+            <div class="review-author">- 32세 / 남성 / 이별 극복 상담</div>
+        </div>
+        <div class="review-card">
+            <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>"연애 경험이 없어서 불안했는데, 상담사님이 제 애착 유형을 분석해주시고 실질적인 조언을 해주셔서 큰 도움이 됐습니다."</p>
+            <div class="review-author">- 26세 / 남성 / 연애 시작 상담</div>
+        </div>
+    </div>
+</section>
+
+<!-- 푸터 -->
+<footer>
+    <div class="logo">마음이음</div>
+    <p>서울특별시 강남구 테헤란로 123 마음빌딩 5층<br>
+       전화: 02-1234-5678 | 이메일: hello@maumieum.kr<br><br>
+       &copy; 2026 마음이음. All rights reserved.</p>
+</footer>
+
+<script>
+    // 자가진단 테스트 데이터
+    const questions = [
+        {
+            q: "연인과 갈등이 생겼을 때, 나는 보통...",
+            options: [
+                "바로 대화로 풀려고 한다",
+                "혼자 생각을 정리한 후 이야기한다",
+                "상대가 먼저 말해주길 기다린다",
+                "감정이 폭발해서 울거나 화를 낸다"
+            ],
+            types: ["secure", "avoidant", "anxious", "anxious"]
+        },
+        {
+            q: "연인에게 가장 바라는 것은?",
+            options: [
+                "서로 존중하며 솔직한 대화",
+                "적당한 거리와 개인 시간",
+                "확실한 애정 표현과 확인",
+                "함께하는 시간과 경험"
+            ],
+            types: ["secure", "avoidant", "anxious", "secure"]
+        },
+        {
+            q: "연인의 답장이 늦을 때 나는...",
+            options: [
+                "바쁘겠거니 하고 기다린다",
+                "오히려 나도 자유 시간을 즐긴다",
+                "불안해서 여러 번 확인한다",
+                "약간 서운하지만 참는다"
+            ],
+            types: ["secure", "avoidant", "anxious", "anxious"]
+        },
+        {
+            q: "관계에서 가장 두려운 것은?",
+            options: [
+                "진정성 없는 관계를 유지하는 것",
+                "나의 자유를 잃는 것",
+                "상대에게 버림받는 것",
+                "상대를 실망시키는 것"
+            ],
+            types: ["secure", "avoidant", "anxious", "anxious"]
+        },
+        {
+            q: "이상적인 주말 데이트는?",
+            options: [
+                "카페에서 깊은 대화 나누기",
+                "각자 취미를 즐기다가 저녁에 만나기",
+                "하루 종일 함께 붙어 있기",
+                "새로운 곳을 함께 탐험하기"
+            ],
+            types: ["secure", "avoidant", "anxious", "secure"]
+        }
+    ];
+
+    let currentQ = 0;
+    let answers = [];
+
+    function renderQuestion() {
+        const q = questions[currentQ];
+        document.getElementById('quizProgress').textContent = `${currentQ + 1} / ${questions.length}`;
+        document.getElementById('quizQuestion').textContent = q.q;
+
+        const optionsEl = document.getElementById('quizOptions');
+        optionsEl.innerHTML = '';
+        q.options.forEach((opt, i) => {
+            const div = document.createElement('div');
+            div.className = 'quiz-option';
+            div.textContent = opt;
+            div.onclick = () => selectOption(i);
+            optionsEl.appendChild(div);
+        });
+
+        document.getElementById('quizNext').textContent =
+            currentQ === questions.length - 1 ? '결과 보기' : '다음';
+    }
+
+    function selectOption(index) {
+        answers[currentQ] = index;
+        document.querySelectorAll('.quiz-option').forEach((el, i) => {
+            el.classList.toggle('selected', i === index);
+        });
+    }
+
+    function nextQuestion() {
+        if (answers[currentQ] === undefined) {
+            alert('답변을 선택해주세요!');
+            return;
+        }
+
+        if (currentQ < questions.length - 1) {
+            currentQ++;
+            renderQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        const typeCount = { secure: 0, avoidant: 0, anxious: 0 };
+        answers.forEach((ans, i) => {
+            typeCount[questions[i].types[ans]]++;
+        });
+
+        let maxType = 'secure';
+        for (const type in typeCount) {
+            if (typeCount[type] > typeCount[maxType]) maxType = type;
+        }
+
+        const results = {
+            secure: {
+                title: "안정형 애착 유형",
+                desc: "당신은 관계에서 안정감을 느끼며, 건강한 소통을 할 수 있는 유형입니다. 자신과 상대를 모두 신뢰하며, 갈등 상황에서도 차분하게 대처할 수 있습니다. 더 깊은 관계를 위해 전문 상담을 통해 자신을 탐색해보는 것도 좋습니다."
+            },
+            avoidant: {
+                title: "회피형 애착 유형",
+                desc: "당신은 독립성을 중요시하며, 관계에서 일정한 거리를 유지하려는 경향이 있습니다. 감정 표현이 서툴 수 있지만, 이는 자기 보호의 한 방식입니다. 전문 상담을 통해 더 편안하게 마음을 여는 방법을 배워보세요."
+            },
+            anxious: {
+                title: "불안형 애착 유형",
+                desc: "당신은 관계에서 깊은 유대감을 원하며, 상대의 반응에 민감한 편입니다. 사랑을 갈구하는 마음이 크지만, 때로는 불안이 앞서기도 합니다. 전문 상담을 통해 안정적인 관계 패턴을 만들어 보세요."
+            }
+        };
+
+        document.getElementById('quizArea').style.display = 'none';
+        const resultEl = document.getElementById('quizResult');
+        resultEl.style.display = 'block';
+        document.getElementById('resultTitle').textContent = results[maxType].title;
+        document.getElementById('resultDesc').textContent = results[maxType].desc;
+    }
+
+    // 예약 폼 제출
+    function submitBooking(e) {
+        e.preventDefault();
+        alert('상담 예약이 접수되었습니다!\n담당자가 곧 연락드리겠습니다.');
+        e.target.reset();
+    }
+
+    // 부드러운 스크롤
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // 초기화
+    renderQuestion();
+</script>
+
+</body>
+</html>
