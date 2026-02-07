@@ -559,6 +559,143 @@
             margin: 0 auto 30px;
         }
 
+        /* 후속 질문 채팅 UI */
+        .followup-section {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .followup-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #2d2d2d;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .followup-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .followup-suggestions button {
+            background: #fff;
+            border: 1.5px solid #e87461;
+            color: #e87461;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .followup-suggestions button:hover {
+            background: #e87461;
+            color: #fff;
+        }
+
+        .followup-suggestions button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f0f0f0;
+            border-color: #ccc;
+            color: #999;
+        }
+
+        .followup-chat {
+            max-height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 4px;
+        }
+
+        .chat-bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 0.92rem;
+            line-height: 1.7;
+            max-width: 85%;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-bubble.user {
+            background: #e87461;
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-bubble.counselor {
+            background: #fff;
+            color: #555;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .chat-bubble.counselor .counselor-label {
+            font-size: 0.78rem;
+            color: #e87461;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .followup-input-area {
+            display: flex;
+            gap: 8px;
+        }
+
+        .followup-input-area input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #eee;
+            border-radius: 25px;
+            font-size: 0.92rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .followup-input-area input:focus {
+            border-color: #e87461;
+        }
+
+        .followup-input-area button {
+            padding: 12px 24px;
+            background: #e87461;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .followup-input-area button:hover {
+            background: #d4614f;
+        }
+
+        .followup-divider {
+            border: none;
+            border-top: 1px solid #e0d6e8;
+            margin: 20px 0;
+        }
+
         /* 상담 예약 폼 */
         .booking {
             background: linear-gradient(180deg, #faf8fc 0%, #fef5f3 100%);
@@ -979,6 +1116,17 @@
             <h3 id="resultTitle"></h3>
             <p id="resultDesc"></p>
             <a href="#booking" class="btn btn-primary">전문 상담 받아보기</a>
+
+            <hr class="followup-divider">
+            <div class="followup-section" id="followupSection">
+                <div class="followup-title">더 궁금한 점이 있으신가요?</div>
+                <div class="followup-suggestions" id="followupSuggestions"></div>
+                <div class="followup-chat" id="followupChat"></div>
+                <div class="followup-input-area">
+                    <input type="text" id="followupInput" placeholder="궁금한 점을 입력해주세요..." onkeydown="if(event.key==='Enter') sendFollowup()">
+                    <button onclick="sendFollowup()">질문하기</button>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -1270,6 +1418,137 @@
         document.getElementById('resultIcon').innerHTML = results[maxType].icon;
         document.getElementById('resultTitle').textContent = results[maxType].title;
         document.getElementById('resultDesc').textContent = results[maxType].desc;
+
+        // 후속 질문 초기화
+        userResultType = maxType;
+        usedSuggestions.clear();
+        document.getElementById('followupChat').innerHTML = '';
+        renderFollowupSuggestions();
+    }
+
+    // 후속 질문 데이터
+    const followupData = {
+        secure: {
+            suggestions: [
+                "안정형이면 연애에서 주의할 점은?",
+                "안정형인데도 불안할 때가 있어요",
+                "회피형 파트너와 잘 지내려면?",
+                "관계를 더 깊게 만드는 방법은?"
+            ],
+            responses: {
+                "안정형이면 연애에서 주의할 점은?": "안정형이라도 상대방의 애착 유형에 따라 갈등이 생길 수 있어요. 특히 회피형 파트너에게는 지나친 친밀감이 부담이 될 수 있고, 불안형 파트너에게는 당신의 차분함이 무관심으로 느껴질 수 있습니다. 상대의 필요를 이해하고 소통 방식을 조율하는 것이 중요합니다.",
+                "안정형인데도 불안할 때가 있어요": "안정형이라고 항상 안정적인 건 아닙니다. 특정 상황이나 과거 경험에 의해 불안이 활성화될 수 있어요. 이런 순간에는 자신의 감정을 인정하고, 파트너에게 솔직하게 표현하는 것이 도움이 됩니다. 필요하다면 전문 상담을 통해 불안의 뿌리를 탐색해볼 수도 있어요.",
+                "회피형 파트너와 잘 지내려면?": "회피형 파트너에게는 공간과 시간을 존중해주는 것이 핵심입니다. 감정적 대화를 강요하기보다, 편안한 분위기에서 자연스럽게 마음을 열 수 있도록 기다려주세요. 당신의 안정적인 태도가 파트너에게 큰 안전감을 줄 수 있습니다.",
+                "관계를 더 깊게 만드는 방법은?": "이미 안정적인 관계 기반이 있으시니, 새로운 경험을 함께 나누어 보세요. 서로의 취약한 모습을 공유하고, 감사한 점을 표현하는 습관을 들이면 관계가 더욱 깊어집니다. 정기적인 '관계 점검 대화'도 추천드려요."
+            }
+        },
+        avoidant: {
+            suggestions: [
+                "회피형이 관계를 잘 유지하려면?",
+                "감정 표현이 너무 어려워요",
+                "파트너가 집착한다고 느껴질 때는?",
+                "혼자 있고 싶은 건 잘못인가요?"
+            ],
+            responses: {
+                "회피형이 관계를 잘 유지하려면?": "회피형에게 가장 중요한 것은 '작은 연결'부터 시작하는 거예요. 매일 짧은 안부 메시지, 짧은 통화처럼 부담 없는 방식으로 연결감을 유지해보세요. 큰 감정 표현보다 꾸준한 작은 노력이 관계에 큰 변화를 가져옵니다.",
+                "감정 표현이 너무 어려워요": "감정 표현이 어려운 건 자연스러운 일이에요. 어린 시절 감정을 억눌러야 했던 경험에서 비롯되는 경우가 많습니다. 먼저 혼자서 일기나 메모로 감정을 적어보는 연습을 해보세요. 그 다음, 파트너에게 '나는 지금 이런 느낌이야'라는 간단한 문장으로 시작해보시길 추천드립니다.",
+                "파트너가 집착한다고 느껴질 때는?": "상대의 행동이 '집착'으로 느껴질 때, 그것이 상대의 불안에서 오는 것인지 생각해보세요. '나는 너를 좋아하지만, 혼자만의 시간도 필요해'라고 솔직하게 말하되, 그 뒤에 구체적인 대안을 제시하면 좋습니다. 예를 들어 '내일 저녁에 같이 밥 먹자' 같은 확실한 약속이요.",
+                "혼자 있고 싶은 건 잘못인가요?": "전혀 잘못이 아닙니다. 개인 공간은 건강한 관계에 꼭 필요한 요소예요. 다만, 혼자 있고 싶은 마음이 '관계에서 도피'하려는 것인지, '에너지를 충전'하려는 것인지 구분해보세요. 후자라면 파트너에게 이유를 설명하고 충분히 요청할 수 있는 부분입니다."
+            }
+        },
+        anxious: {
+            suggestions: [
+                "불안할 때 마음을 진정시키는 방법은?",
+                "연락이 안 올 때 어떻게 해야 하나요?",
+                "매번 관계에서 상처받아요",
+                "상대를 믿는 방법이 있을까요?"
+            ],
+            responses: {
+                "불안할 때 마음을 진정시키는 방법은?": "불안이 올라올 때는 먼저 깊은 호흡을 3회 해보세요. 그리고 '이건 내 불안이 만들어낸 생각이야'라고 스스로에게 말해주세요. 파트너에게 확인 연락을 하기 전에 10분만 기다려보는 연습도 도움이 됩니다. 시간이 지나면 불안이 자연스럽게 줄어드는 경험을 하게 될 거예요.",
+                "연락이 안 올 때 어떻게 해야 하나요?": "연락이 안 오면 불안한 건 자연스러운 감정이에요. 하지만 연락 간격이 사랑의 양을 의미하지는 않습니다. 기다리는 동안 좋아하는 활동에 집중하거나, 친구와 시간을 보내보세요. 그리고 만났을 때 '연락이 없으면 걱정돼'라고 부드럽게 표현해보세요.",
+                "매번 관계에서 상처받아요": "반복되는 상처 패턴은 내면의 '미해결 감정'이 관계에서 재현되는 것일 수 있어요. 이전 관계에서의 상처와 현재 관계의 상황을 분리해서 보는 연습이 필요합니다. 전문 상담을 통해 이 패턴을 인식하고, 건강한 관계 방식을 새로 배워보시는 걸 강력히 추천드립니다.",
+                "상대를 믿는 방법이 있을까요?": "신뢰는 한 번에 쌓이는 게 아니라, 작은 약속을 지키는 경험이 쌓여서 만들어져요. 먼저 작은 것부터 파트너를 믿어보세요. 그리고 '증거'가 아닌 상황에서 의심하는 자신을 발견하면, '근거가 있는 걱정인가?'라고 스스로에게 물어보는 습관을 들여보세요."
+            }
+        }
+    };
+
+    // 키워드 기반 일반 응답
+    const generalResponses = [
+        { keywords: ["이별", "헤어", "그리", "잊"], response: "이별의 아픔은 시간이 필요해요. 자신을 탓하지 말고, 슬픈 감정을 충분히 느끼는 것이 회복의 첫 걸음입니다. 일상 속 작은 루틴을 유지하고, 주변 사람들과의 연결을 놓지 마세요. 전문 상담사와 함께라면 더 빠르게 마음을 추스를 수 있습니다." },
+        { keywords: ["싸움", "다퉈", "갈등", "화해"], response: "갈등은 관계가 성장하는 과정에서 자연스러운 일이에요. 중요한 건 싸우는 방식입니다. 비난 대신 '나는 이럴 때 이런 기분이야'라는 I-메시지로 표현해보세요. 그리고 해결되지 않는 갈등은 혼자 끙끙대기보다 전문 상담을 통해 중재받는 것이 효과적입니다." },
+        { keywords: ["고백", "좋아", "사귀", "시작"], response: "새로운 관계를 시작하는 건 설레면서도 두려운 일이에요. 자신의 감정에 솔직하되, 상대의 반응을 존중하는 것이 중요합니다. 고백 전에 상대와의 관계 온도를 잘 살펴보시고, 결과에 상관없이 용기를 낸 자신을 칭찬해주세요." },
+        { keywords: ["짝사랑", "단짝", "몰래"], response: "짝사랑은 아름답지만 혼자만의 감정에 갇히면 힘들어질 수 있어요. 적절한 시점에 자신의 마음을 표현하는 것이 건강한 방법입니다. 상대의 반응을 두려워하기보다, 자신의 마음을 솔직하게 전달하는 데 집중해보세요." },
+        { keywords: ["권태", "지루", "설레", "매너리즘"], response: "오래된 관계에서 권태기를 느끼는 건 자연스러운 일이에요. 새로운 활동을 함께 시도하거나, 서로에게 감사한 점을 매일 하나씩 나눠보세요. 처음 만났을 때의 설렘보다 깊은 신뢰와 편안함이 더 가치 있는 사랑의 형태입니다." }
+    ];
+
+    let userResultType = '';
+    const usedSuggestions = new Set();
+
+    function renderFollowupSuggestions() {
+        const suggestions = followupData[userResultType].suggestions;
+        const container = document.getElementById('followupSuggestions');
+        container.innerHTML = '';
+        suggestions.forEach(text => {
+            const btn = document.createElement('button');
+            btn.textContent = text;
+            if (usedSuggestions.has(text)) {
+                btn.disabled = true;
+            }
+            btn.onclick = () => {
+                if (!usedSuggestions.has(text)) askFollowup(text);
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function askFollowup(questionText) {
+        const chat = document.getElementById('followupChat');
+
+        // 유저 질문 버블
+        const userBubble = document.createElement('div');
+        userBubble.className = 'chat-bubble user';
+        userBubble.textContent = questionText;
+        chat.appendChild(userBubble);
+
+        // 추천 질문일 경우 비활성화
+        usedSuggestions.add(questionText);
+        renderFollowupSuggestions();
+
+        // 응답 찾기
+        let response = followupData[userResultType].responses[questionText];
+
+        if (!response) {
+            // 키워드 기반 일반 응답 매칭
+            for (const item of generalResponses) {
+                if (item.keywords.some(kw => questionText.includes(kw))) {
+                    response = item.response;
+                    break;
+                }
+            }
+        }
+
+        if (!response) {
+            response = "좋은 질문이에요. 이 부분은 개인의 상황에 따라 답변이 많이 달라질 수 있습니다. 보다 정확하고 깊이 있는 답변을 위해 전문 상담사와의 1:1 상담을 추천드려요. 아래 '전문 상담 받아보기' 버튼을 통해 예약해보세요!";
+        }
+
+        // 상담사 응답 버블 (약간의 딜레이)
+        setTimeout(() => {
+            const counselorBubble = document.createElement('div');
+            counselorBubble.className = 'chat-bubble counselor';
+            counselorBubble.innerHTML = '<div class="counselor-label">마음이음 상담사</div>' + response;
+            chat.appendChild(counselorBubble);
+            chat.scrollTop = chat.scrollHeight;
+        }, 500);
+
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    function sendFollowup() {
+        const input = document.getElementById('followupInput');
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = '';
+        askFollowup(text);
     }
 
     // 예약 폼 제출
