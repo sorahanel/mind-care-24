@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마음이음 - 연애 심리상담 서비스</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,9 +14,22 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Noto Sans KR', 'Segoe UI', sans-serif;
             color: #3a3a3a;
             line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 스크롤 애니메이션 */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* 네비게이션 */
@@ -22,11 +37,16 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
             padding: 0 40px;
+            transition: box-shadow 0.3s;
+        }
+
+        nav.scrolled {
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
         }
 
         .nav-inner {
@@ -35,31 +55,50 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 70px;
+            height: 72px;
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #e87461;
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #e87461, #c96dd8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
         }
 
         .nav-links {
             display: flex;
             list-style: none;
-            gap: 32px;
+            gap: 8px;
         }
 
         .nav-links a {
             text-decoration: none;
             color: #555;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
-            transition: color 0.3s;
+            padding: 8px 16px;
+            border-radius: 50px;
+            transition: all 0.3s;
         }
 
         .nav-links a:hover {
             color: #e87461;
+            background: rgba(232, 116, 97, 0.08);
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, #e87461, #d4614f);
+            color: #fff !important;
+            -webkit-text-fill-color: #fff;
+        }
+
+        .nav-cta:hover {
+            background: linear-gradient(135deg, #d4614f, #c4513f) !important;
+            color: #fff !important;
+            box-shadow: 0 4px 15px rgba(232, 116, 97, 0.3);
         }
 
         /* 히어로 섹션 */
@@ -69,83 +108,183 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            background: linear-gradient(135deg, #fdf2f0 0%, #f0e4f7 50%, #e4ecf7 100%);
+            background: linear-gradient(160deg, #fef5f3 0%, #f5eafa 40%, #edf2fc 70%, #fef5f3 100%);
             padding: 120px 20px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(232, 116, 97, 0.08) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            border-radius: 50%;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(201, 109, 216, 0.06) 0%, transparent 70%);
+            bottom: -100px;
+            left: -100px;
+            border-radius: 50%;
         }
 
         .hero-content {
-            max-width: 700px;
+            max-width: 750px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(232, 116, 97, 0.1);
+            color: #e87461;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 50px;
+            margin-bottom: 28px;
+            letter-spacing: 0.5px;
         }
 
         .hero h1 {
-            font-size: 3rem;
-            color: #2d2d2d;
-            margin-bottom: 20px;
-            line-height: 1.3;
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 24px;
+            line-height: 1.35;
+            letter-spacing: -1px;
         }
 
         .hero h1 span {
-            color: #e87461;
+            background: linear-gradient(135deg, #e87461, #c96dd8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero p {
             font-size: 1.15rem;
-            color: #666;
-            margin-bottom: 40px;
-            line-height: 1.8;
+            color: #6b7280;
+            margin-bottom: 44px;
+            line-height: 1.9;
+            font-weight: 300;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .btn {
             display: inline-block;
-            padding: 16px 40px;
-            border-radius: 50px;
+            padding: 16px 36px;
+            border-radius: 14px;
             text-decoration: none;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
         }
 
         .btn-primary {
-            background: #e87461;
+            background: linear-gradient(135deg, #e87461, #d4614f);
             color: #fff;
+            box-shadow: 0 4px 15px rgba(232, 116, 97, 0.25);
         }
 
         .btn-primary:hover {
-            background: #d4614f;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(232, 116, 97, 0.35);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(232, 116, 97, 0.35);
         }
 
-        .btn-outline {
-            border: 2px solid #e87461;
+        .btn-secondary {
+            background: #fff;
             color: #e87461;
-            margin-left: 12px;
+            border: 2px solid rgba(232, 116, 97, 0.2);
         }
 
-        .btn-outline:hover {
-            background: #e87461;
-            color: #fff;
+        .btn-secondary:hover {
+            background: rgba(232, 116, 97, 0.05);
+            border-color: #e87461;
+            transform: translateY(-3px);
+        }
+
+        /* 통계 바 */
+        .stats-bar {
+            background: #fff;
+            padding: 50px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .stats-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #e87461, #c96dd8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+
+        .stat-item p {
+            color: #888;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         /* 섹션 공통 */
         section {
-            padding: 100px 20px;
+            padding: 110px 20px;
         }
 
         .section-title {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 64px;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #e87461;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
         }
 
         .section-title h2 {
-            font-size: 2rem;
-            color: #2d2d2d;
-            margin-bottom: 12px;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 14px;
+            letter-spacing: -0.5px;
         }
 
         .section-title p {
-            color: #888;
+            color: #9ca3af;
             font-size: 1.05rem;
+            font-weight: 300;
         }
 
         /* 서비스 소개 */
@@ -157,43 +296,83 @@
             max-width: 1100px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
         }
 
         .service-card {
-            background: #fafafa;
-            border-radius: 16px;
-            padding: 40px 30px;
-            text-align: center;
-            transition: all 0.3s;
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 20px;
+            padding: 44px 32px;
+            text-align: left;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #e87461, #c96dd8);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
         .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            border-color: transparent;
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
         }
 
         .service-icon {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+        }
+
+        .service-card:nth-child(1) .service-icon {
+            background: rgba(232, 116, 97, 0.1);
+        }
+
+        .service-card:nth-child(2) .service-icon {
+            background: rgba(201, 109, 216, 0.1);
+        }
+
+        .service-card:nth-child(3) .service-icon {
+            background: rgba(100, 149, 237, 0.1);
         }
 
         .service-card h3 {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
+            font-weight: 700;
             margin-bottom: 12px;
-            color: #2d2d2d;
+            color: #1a1a2e;
         }
 
         .service-card p {
-            color: #777;
-            font-size: 0.95rem;
-            line-height: 1.7;
+            color: #6b7280;
+            font-size: 0.92rem;
+            line-height: 1.8;
+            font-weight: 300;
         }
 
         /* 상담사 소개 */
         .counselors {
-            background: linear-gradient(135deg, #fdf2f0 0%, #f7f0fc 100%);
+            background: linear-gradient(180deg, #faf8fc 0%, #fff 100%);
         }
 
         .counselor-grid {
@@ -201,47 +380,70 @@
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            gap: 24px;
         }
 
         .counselor-card {
             background: #fff;
-            border-radius: 16px;
-            padding: 30px;
+            border-radius: 24px;
+            padding: 40px 30px 36px;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f0f0f0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .counselor-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+            border-color: transparent;
         }
 
         .counselor-avatar {
-            width: 100px;
-            height: 100px;
+            width: 96px;
+            height: 96px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #e87461, #c96dd8);
-            margin: 0 auto 20px;
+            margin: 0 auto 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2rem;
-            color: #fff;
+            font-size: 2.5rem;
+            position: relative;
+        }
+
+        .counselor-card:nth-child(1) .counselor-avatar {
+            background: linear-gradient(135deg, #fde8e4, #fcd5ce);
+        }
+
+        .counselor-card:nth-child(2) .counselor-avatar {
+            background: linear-gradient(135deg, #e8def8, #d5c6f0);
+        }
+
+        .counselor-card:nth-child(3) .counselor-avatar {
+            background: linear-gradient(135deg, #d4e8fc, #c5dcf5);
         }
 
         .counselor-card h3 {
             font-size: 1.15rem;
-            margin-bottom: 6px;
-            color: #2d2d2d;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #1a1a2e;
         }
 
         .counselor-card .role {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            background: rgba(232, 116, 97, 0.08);
             color: #e87461;
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-bottom: 12px;
         }
 
         .counselor-card p {
-            color: #777;
-            font-size: 0.9rem;
-            line-height: 1.6;
+            color: #9ca3af;
+            font-size: 0.88rem;
+            line-height: 1.7;
         }
 
         /* 자가진단 테스트 */
@@ -250,61 +452,83 @@
         }
 
         .quiz-container {
-            max-width: 700px;
+            max-width: 680px;
             margin: 0 auto;
-            background: linear-gradient(135deg, #fdf2f0, #f7f0fc);
-            border-radius: 20px;
-            padding: 50px 40px;
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 28px;
+            padding: 50px 44px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.04);
         }
 
-        .quiz-question {
-            font-size: 1.15rem;
-            font-weight: 600;
-            margin-bottom: 25px;
-            color: #2d2d2d;
-            text-align: center;
+        .quiz-progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .quiz-progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #e87461, #c96dd8);
+            border-radius: 3px;
+            transition: width 0.4s ease;
         }
 
         .quiz-progress {
+            text-align: right;
+            color: #bbb;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 28px;
+        }
+
+        .quiz-question {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 28px;
+            color: #1a1a2e;
             text-align: center;
-            color: #aaa;
-            font-size: 0.85rem;
-            margin-bottom: 15px;
+            line-height: 1.5;
         }
 
         .quiz-options {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .quiz-option {
-            padding: 16px 20px;
-            background: #fff;
-            border: 2px solid #eee;
-            border-radius: 12px;
+            padding: 18px 22px;
+            background: #fafafa;
+            border: 2px solid transparent;
+            border-radius: 14px;
             cursor: pointer;
-            font-size: 0.95rem;
-            transition: all 0.2s;
+            font-size: 0.93rem;
+            transition: all 0.25s;
             text-align: left;
+            color: #444;
+            font-weight: 400;
         }
 
         .quiz-option:hover {
-            border-color: #e87461;
             background: #fff5f3;
+            border-color: rgba(232, 116, 97, 0.3);
         }
 
         .quiz-option.selected {
             border-color: #e87461;
             background: #fff5f3;
             font-weight: 600;
+            color: #e87461;
         }
 
         .quiz-nav {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-top: 30px;
+            margin-top: 32px;
         }
 
         .quiz-result {
@@ -312,60 +536,77 @@
             display: none;
         }
 
+        .quiz-result-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
         .quiz-result h3 {
-            font-size: 1.5rem;
-            color: #e87461;
-            margin-bottom: 15px;
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #e87461, #c96dd8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 18px;
         }
 
         .quiz-result p {
-            color: #666;
-            line-height: 1.8;
+            color: #6b7280;
+            line-height: 1.9;
+            font-weight: 300;
+            max-width: 500px;
+            margin: 0 auto 30px;
         }
 
         /* 상담 예약 폼 */
         .booking {
-            background: linear-gradient(135deg, #fdf2f0 0%, #e4ecf7 100%);
+            background: linear-gradient(180deg, #faf8fc 0%, #fef5f3 100%);
         }
 
         .booking-form {
-            max-width: 600px;
+            max-width: 580px;
             margin: 0 auto;
             background: #fff;
-            border-radius: 20px;
-            padding: 50px 40px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+            border-radius: 28px;
+            padding: 50px 44px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.04);
         }
 
         .form-group {
-            margin-bottom: 22px;
+            margin-bottom: 24px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #444;
-            font-size: 0.95rem;
+            color: #1a1a2e;
+            font-size: 0.9rem;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #eee;
-            border-radius: 12px;
-            font-size: 0.95rem;
+            padding: 14px 18px;
+            border: 2px solid #f0f0f0;
+            border-radius: 14px;
+            font-size: 0.93rem;
             font-family: inherit;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
             outline: none;
+            background: #fafafa;
+            color: #333;
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             border-color: #e87461;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(232, 116, 97, 0.08);
         }
 
         .form-group textarea {
@@ -374,14 +615,13 @@
         }
 
         .form-submit {
-            text-align: center;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .form-submit .btn {
-            border: none;
-            cursor: pointer;
             width: 100%;
+            padding: 18px;
+            font-size: 1rem;
         }
 
         /* 후기 */
@@ -393,71 +633,221 @@
             max-width: 1000px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 24px;
         }
 
         .review-card {
-            background: #fafafa;
-            border-radius: 16px;
-            padding: 30px;
-            border-left: 4px solid #e87461;
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .review-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        .review-quote {
+            font-size: 2.5rem;
+            color: rgba(232, 116, 97, 0.15);
+            font-family: Georgia, serif;
+            line-height: 1;
+            margin-bottom: 8px;
         }
 
         .review-stars {
-            color: #f5b731;
-            font-size: 1rem;
-            margin-bottom: 12px;
+            color: #fbbf24;
+            font-size: 0.9rem;
+            margin-bottom: 14px;
+            letter-spacing: 2px;
         }
 
         .review-card p {
-            color: #555;
-            font-size: 0.95rem;
-            line-height: 1.7;
-            margin-bottom: 15px;
+            color: #6b7280;
+            font-size: 0.92rem;
+            line-height: 1.8;
+            margin-bottom: 18px;
+            font-weight: 300;
         }
 
         .review-author {
-            color: #aaa;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .review-author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fde8e4, #e8def8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 0.85rem;
+            font-weight: 700;
+            color: #e87461;
+        }
+
+        .review-author-info {
+            font-size: 0.82rem;
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+
+        .review-author-info strong {
+            color: #555;
+            font-weight: 600;
+            display: block;
+        }
+
+        /* CTA 배너 */
+        .cta-banner {
+            background: linear-gradient(135deg, #e87461, #c96dd8);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .cta-banner h2 {
+            color: #fff;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+
+        .cta-banner p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.05rem;
+            margin-bottom: 32px;
+            font-weight: 300;
+        }
+
+        .btn-white {
+            background: #fff;
+            color: #e87461;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-white:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
 
         /* 푸터 */
         footer {
-            background: #2d2d2d;
-            color: #bbb;
-            text-align: center;
-            padding: 40px 20px;
+            background: #1a1a2e;
+            color: #888;
+            padding: 60px 20px 40px;
         }
 
-        footer .logo {
-            color: #e87461;
-            margin-bottom: 12px;
+        .footer-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        footer p {
+        .footer-brand .logo {
+            margin-bottom: 14px;
+            display: inline-block;
+        }
+
+        .footer-brand p {
             font-size: 0.85rem;
             line-height: 1.8;
+            color: #666;
+        }
+
+        .footer-col h4 {
+            color: #ccc;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+
+        .footer-col a:hover {
+            color: #e87461;
+        }
+
+        .footer-bottom {
+            max-width: 1000px;
+            margin: 24px auto 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #555;
         }
 
         /* 모바일 반응형 */
         @media (max-width: 768px) {
             .hero h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
             }
 
             .nav-links {
                 display: none;
             }
 
-            .btn-outline {
-                display: block;
-                margin: 12px auto 0;
+            nav {
+                padding: 0 20px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .stats-inner {
+                grid-template-columns: 1fr;
+                gap: 24px;
             }
 
             .quiz-container,
             .booking-form {
-                padding: 30px 20px;
+                padding: 32px 24px;
+            }
+
+            section {
+                padding: 80px 20px;
+            }
+
+            .footer-inner {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .service-card {
+                text-align: center;
+            }
+
+            .service-icon {
+                margin: 0 auto 24px;
             }
         }
     </style>
@@ -465,15 +855,15 @@
 <body>
 
 <!-- 네비게이션 -->
-<nav>
+<nav id="navbar">
     <div class="nav-inner">
         <div class="logo">마음이음</div>
         <ul class="nav-links">
-            <li><a href="#services">서비스 소개</a></li>
+            <li><a href="#services">서비스</a></li>
             <li><a href="#counselors">상담사</a></li>
             <li><a href="#quiz">자가진단</a></li>
-            <li><a href="#booking">상담 예약</a></li>
             <li><a href="#reviews">후기</a></li>
+            <li><a href="#booking" class="nav-cta">상담 예약</a></li>
         </ul>
     </div>
 </nav>
@@ -481,32 +871,54 @@
 <!-- 히어로 -->
 <section class="hero">
     <div class="hero-content">
+        <div class="hero-badge">전문 심리상담 서비스</div>
         <h1>사랑도 연습이 필요할 때,<br><span>마음이음</span>이 함께합니다</h1>
         <p>연애에서 느끼는 불안, 갈등, 외로움...<br>
            전문 심리상담사가 당신의 마음을 따뜻하게 이어드립니다.</p>
-        <a href="#booking" class="btn btn-primary">상담 예약하기</a>
-        <a href="#quiz" class="btn btn-outline">자가진단 해보기</a>
+        <div class="hero-buttons">
+            <a href="#booking" class="btn btn-primary">상담 예약하기</a>
+            <a href="#quiz" class="btn btn-secondary">자가진단 해보기</a>
+        </div>
     </div>
 </section>
 
+<!-- 통계 -->
+<div class="stats-bar">
+    <div class="stats-inner fade-up">
+        <div class="stat-item">
+            <h3>12,000+</h3>
+            <p>누적 상담 건수</p>
+        </div>
+        <div class="stat-item">
+            <h3>98.5%</h3>
+            <p>상담 만족도</p>
+        </div>
+        <div class="stat-item">
+            <h3>15명</h3>
+            <p>전문 상담사</p>
+        </div>
+    </div>
+</div>
+
 <!-- 서비스 소개 -->
 <section id="services" class="services">
-    <div class="section-title">
+    <div class="section-title fade-up">
+        <div class="section-label">Services</div>
         <h2>어떤 상담을 받을 수 있나요?</h2>
         <p>다양한 연애 고민에 맞춘 전문 상담 프로그램</p>
     </div>
     <div class="services-grid">
-        <div class="service-card">
+        <div class="service-card fade-up">
             <div class="service-icon">&#x1F491;</div>
             <h3>커플 상담</h3>
             <p>소통 문제, 갈등 해결, 신뢰 회복 등 파트너와 함께하는 관계 개선 상담을 진행합니다.</p>
         </div>
-        <div class="service-card">
+        <div class="service-card fade-up">
             <div class="service-icon">&#x1F494;</div>
             <h3>이별 극복 상담</h3>
             <p>이별 후 감정 정리와 자존감 회복을 돕고, 건강하게 새 출발할 수 있도록 안내합니다.</p>
         </div>
-        <div class="service-card">
+        <div class="service-card fade-up">
             <div class="service-icon">&#x1F496;</div>
             <h3>연애 시작 상담</h3>
             <p>연애가 처음이거나 어려운 분들을 위한 애착 유형 분석과 관계 기술 코칭을 제공합니다.</p>
@@ -516,24 +928,25 @@
 
 <!-- 상담사 소개 -->
 <section id="counselors" class="counselors">
-    <div class="section-title">
+    <div class="section-title fade-up">
+        <div class="section-label">Counselors</div>
         <h2>전문 상담사를 소개합니다</h2>
         <p>검증된 자격과 풍부한 경험을 갖춘 전문가</p>
     </div>
     <div class="counselor-grid">
-        <div class="counselor-card">
+        <div class="counselor-card fade-up">
             <div class="counselor-avatar">&#x1F469;&#x200D;&#x2695;&#xFE0F;</div>
             <h3>김서윤 상담사</h3>
             <div class="role">커플 상담 전문</div>
             <p>임상심리 석사 / 상담 경력 12년<br>부부 및 커플 관계 회복 전문</p>
         </div>
-        <div class="counselor-card">
+        <div class="counselor-card fade-up">
             <div class="counselor-avatar">&#x1F468;&#x200D;&#x2695;&#xFE0F;</div>
             <h3>박지호 상담사</h3>
             <div class="role">애착 심리 전문</div>
             <p>심리학 박사 / 상담 경력 9년<br>애착 유형과 연애 패턴 분석 전문</p>
         </div>
-        <div class="counselor-card">
+        <div class="counselor-card fade-up">
             <div class="counselor-avatar">&#x1F469;&#x200D;&#x2695;&#xFE0F;</div>
             <h3>이하은 상담사</h3>
             <div class="role">이별 회복 전문</div>
@@ -544,12 +957,16 @@
 
 <!-- 자가진단 테스트 -->
 <section id="quiz" class="quiz">
-    <div class="section-title">
+    <div class="section-title fade-up">
+        <div class="section-label">Self Test</div>
         <h2>나의 연애 유형은?</h2>
         <p>간단한 테스트로 나의 연애 심리를 확인해보세요</p>
     </div>
-    <div class="quiz-container">
+    <div class="quiz-container fade-up">
         <div id="quizArea">
+            <div class="quiz-progress-bar">
+                <div class="quiz-progress-fill" id="quizProgressFill" style="width: 20%"></div>
+            </div>
             <div class="quiz-progress" id="quizProgress">1 / 5</div>
             <div class="quiz-question" id="quizQuestion"></div>
             <div class="quiz-options" id="quizOptions"></div>
@@ -558,21 +975,76 @@
             </div>
         </div>
         <div class="quiz-result" id="quizResult">
+            <div class="quiz-result-icon" id="resultIcon"></div>
             <h3 id="resultTitle"></h3>
             <p id="resultDesc"></p>
-            <br>
             <a href="#booking" class="btn btn-primary">전문 상담 받아보기</a>
         </div>
     </div>
 </section>
 
+<!-- 후기 -->
+<section id="reviews" class="reviews">
+    <div class="section-title fade-up">
+        <div class="section-label">Reviews</div>
+        <h2>상담 후기</h2>
+        <p>마음이음과 함께한 분들의 이야기</p>
+    </div>
+    <div class="review-grid">
+        <div class="review-card fade-up">
+            <div class="review-quote">"</div>
+            <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>3년 연애 중 심한 갈등을 겪고 있었는데, 커플 상담을 통해 서로의 마음을 이해하게 됐어요. 지금은 훨씬 편안해졌습니다.</p>
+            <div class="review-author">
+                <div class="review-author-avatar">J</div>
+                <div class="review-author-info">
+                    <strong>28세 / 여성</strong>
+                    커플 상담
+                </div>
+            </div>
+        </div>
+        <div class="review-card fade-up">
+            <div class="review-quote">"</div>
+            <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>이별 후 6개월 동안 힘들었는데, 상담을 받으며 제 감정을 정리할 수 있었어요. 이제는 저를 더 사랑하게 됐습니다.</p>
+            <div class="review-author">
+                <div class="review-author-avatar">K</div>
+                <div class="review-author-info">
+                    <strong>32세 / 남성</strong>
+                    이별 극복 상담
+                </div>
+            </div>
+        </div>
+        <div class="review-card fade-up">
+            <div class="review-quote">"</div>
+            <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p>연애 경험이 없어서 불안했는데, 상담사님이 제 애착 유형을 분석해주시고 실질적인 조언을 해주셔서 큰 도움이 됐습니다.</p>
+            <div class="review-author">
+                <div class="review-author-avatar">M</div>
+                <div class="review-author-info">
+                    <strong>26세 / 남성</strong>
+                    연애 시작 상담
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA 배너 -->
+<section class="cta-banner">
+    <h2>지금 바로 마음을 나눠보세요</h2>
+    <p>첫 상담은 30% 할인된 가격으로 만나보실 수 있습니다</p>
+    <a href="#booking" class="btn btn-white">무료 상담 신청하기</a>
+</section>
+
 <!-- 상담 예약 -->
 <section id="booking" class="booking">
-    <div class="section-title">
+    <div class="section-title fade-up">
+        <div class="section-label">Booking</div>
         <h2>상담 예약</h2>
         <p>편한 시간에 전문 상담사와 이야기를 나눠보세요</p>
     </div>
-    <form class="booking-form" onsubmit="submitBooking(event)">
+    <form class="booking-form fade-up" onsubmit="submitBooking(event)">
         <div class="form-group">
             <label>이름</label>
             <input type="text" placeholder="이름을 입력해주세요" required>
@@ -614,40 +1086,55 @@
     </form>
 </section>
 
-<!-- 후기 -->
-<section id="reviews" class="reviews">
-    <div class="section-title">
-        <h2>상담 후기</h2>
-        <p>마음이음과 함께한 분들의 이야기</p>
-    </div>
-    <div class="review-grid">
-        <div class="review-card">
-            <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-            <p>"3년 연애 중 심한 갈등을 겪고 있었는데, 커플 상담을 통해 서로의 마음을 이해하게 됐어요. 지금은 훨씬 편안해졌습니다."</p>
-            <div class="review-author">- 28세 / 여성 / 커플 상담</div>
-        </div>
-        <div class="review-card">
-            <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-            <p>"이별 후 6개월 동안 힘들었는데, 상담을 받으며 제 감정을 정리할 수 있었어요. 이제는 저를 더 사랑하게 됐습니다."</p>
-            <div class="review-author">- 32세 / 남성 / 이별 극복 상담</div>
-        </div>
-        <div class="review-card">
-            <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
-            <p>"연애 경험이 없어서 불안했는데, 상담사님이 제 애착 유형을 분석해주시고 실질적인 조언을 해주셔서 큰 도움이 됐습니다."</p>
-            <div class="review-author">- 26세 / 남성 / 연애 시작 상담</div>
-        </div>
-    </div>
-</section>
-
 <!-- 푸터 -->
 <footer>
-    <div class="logo">마음이음</div>
-    <p>서울특별시 강남구 테헤란로 123 마음빌딩 5층<br>
-       전화: 02-1234-5678 | 이메일: hello@maumieum.kr<br><br>
-       &copy; 2026 마음이음. All rights reserved.</p>
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <div class="logo">마음이음</div>
+            <p>서울특별시 강남구 테헤란로 123 마음빌딩 5층<br>
+               전화: 02-1234-5678<br>
+               이메일: hello@maumieum.kr</p>
+        </div>
+        <div class="footer-col">
+            <h4>서비스</h4>
+            <ul>
+                <li><a href="#services">커플 상담</a></li>
+                <li><a href="#services">이별 극복 상담</a></li>
+                <li><a href="#services">연애 시작 상담</a></li>
+                <li><a href="#quiz">자가진단</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>안내</h4>
+            <ul>
+                <li><a href="#counselors">상담사 소개</a></li>
+                <li><a href="#reviews">상담 후기</a></li>
+                <li><a href="#booking">상담 예약</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 마음이음. All rights reserved.
+    </div>
 </footer>
 
 <script>
+    // 네비게이션 스크롤 효과
+    window.addEventListener('scroll', () => {
+        document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // 스크롤 애니메이션
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
     // 자가진단 테스트 데이터
     const questions = [
         {
@@ -707,6 +1194,8 @@
 
     function renderQuestion() {
         const q = questions[currentQ];
+        const progress = ((currentQ + 1) / questions.length) * 100;
+        document.getElementById('quizProgressFill').style.width = progress + '%';
         document.getElementById('quizProgress').textContent = `${currentQ + 1} / ${questions.length}`;
         document.getElementById('quizQuestion').textContent = q.q;
 
@@ -717,6 +1206,7 @@
             div.className = 'quiz-option';
             div.textContent = opt;
             div.onclick = () => selectOption(i);
+            if (answers[currentQ] === i) div.classList.add('selected');
             optionsEl.appendChild(div);
         });
 
@@ -758,14 +1248,17 @@
 
         const results = {
             secure: {
+                icon: "&#x1F49A;",
                 title: "안정형 애착 유형",
                 desc: "당신은 관계에서 안정감을 느끼며, 건강한 소통을 할 수 있는 유형입니다. 자신과 상대를 모두 신뢰하며, 갈등 상황에서도 차분하게 대처할 수 있습니다. 더 깊은 관계를 위해 전문 상담을 통해 자신을 탐색해보는 것도 좋습니다."
             },
             avoidant: {
+                icon: "&#x1F49C;",
                 title: "회피형 애착 유형",
                 desc: "당신은 독립성을 중요시하며, 관계에서 일정한 거리를 유지하려는 경향이 있습니다. 감정 표현이 서툴 수 있지만, 이는 자기 보호의 한 방식입니다. 전문 상담을 통해 더 편안하게 마음을 여는 방법을 배워보세요."
             },
             anxious: {
+                icon: "&#x1F497;",
                 title: "불안형 애착 유형",
                 desc: "당신은 관계에서 깊은 유대감을 원하며, 상대의 반응에 민감한 편입니다. 사랑을 갈구하는 마음이 크지만, 때로는 불안이 앞서기도 합니다. 전문 상담을 통해 안정적인 관계 패턴을 만들어 보세요."
             }
@@ -774,6 +1267,7 @@
         document.getElementById('quizArea').style.display = 'none';
         const resultEl = document.getElementById('quizResult');
         resultEl.style.display = 'block';
+        document.getElementById('resultIcon').innerHTML = results[maxType].icon;
         document.getElementById('resultTitle').textContent = results[maxType].title;
         document.getElementById('resultDesc').textContent = results[maxType].desc;
     }
